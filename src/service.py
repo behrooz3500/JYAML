@@ -31,3 +31,8 @@ class Service(object):
             'environment': self.environment,
             'depends_on': self.depends_on
         }
+
+
+
+def export_to_compose(version, services, compose_path):
+    pass
