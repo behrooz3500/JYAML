@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  mapi:
+    build: .
+    container_name: mapi
+    command: /bin/sh gunicorn_start.sh
+    volumes:
+      - ./MAPI:/usr/src/app/MAPI/
+      - mapi_static:/usr/src/app/MAPI/staticfiles
+    expose:
+      - 8000
+    environment:
+      - DEBUG=${DJANGO_DEBUG}
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - DJANGO_WSGI_MODULE=${DJANGO_WSGI_MODULE}
+      - SQL_ENGINE=${SQL_ENGINE}
+      - SQL_DATABASE=${SQL_DATABASE}
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+      - SQL_HOST=${SQL_HOST}
+      - SQL_PORT=${SQL_PORT}
+      - HAYSTACK_ENGINE=${HAYSTACK_ENGINE}
+      - HAYSTACK_URL=${HAYSTACK_URL}
+      - HAYSTACK_INDEX_NAME=${HAYSTACK_INDEX_NAME}
+      - HAYSTACK_USER=${HAYSTACK_USER}
+      - HAYSTACK_PASSWORD=${HAYSTACK_PASSWORD}
+      - GUNICORN_NAME=${GUNICORN_NAME}
+      - GUNICORN_DIR=${GUNICORN_DIR}
+      - GUNICORN_WORKERS=${GUNICORN_WORKERS}
+      - GUNICORN_BIND=${GUNICORN_BIND}
+      - GUNICORN_LOG_LEVEL=${GUNICORN_LOG_LEVEL}
+    depends_on:
+      - db
+      - es
+
+  db:
+    image: postgres
+    container_name: db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  es:
+    image: elasticsearch:7.16.1
+    container_name: es
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    environment:
+      - ELASTIC_PASSWORD=${ES_PASSWORD}
+      - ES_JAVA_OPTS=${ES_JAVA_OPTS}
+      - bootstrap.memory_lock=${ES_BOOTSTRAP_MEMORY_LOCK}
+      - discovery.type=${ES_DISCOVERY_TYPE}
+      - xpack.security.enabled=${ES_XPACK_SECURITY_ENABLED}
+
+  server:
+    build: ./Nginx
+    container_name: server
+    volumes:
+      - ./Nginx/sites-enabled:/etc/nginx/conf.d
+      - mapi_static:/usr/data/mapi/staticfiles
+    ports:
+      - 1337:80
+    depends_on:
+      - mapi
+
+volumes:
+  db_data:
+    driver: local
+  es_data:
+    driver: local
+  mapi_static:
+    driver: local
