@@ -1,0 +1,17 @@
+version: '3.2'
+services:
+  db:
+    image: postgres
+    container_name: db
+    command: exec startup.sh
+    volumes:
+    - db_data:/var/lib/postgresql/data
+    - /test/test1:/usr/share/data
+    expose: []
+    ports:
+      '5432': '5432'
+    environment:
+      postgres_db: mapi
+      postgres_user: mapi_user
+      postgres_password: s3cret
+    depends_on: []
