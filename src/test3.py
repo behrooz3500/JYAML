@@ -1,11 +1,10 @@
 import test2 as t
 
 
-path = "test_yaml.yaml"
+path = ("docker-compose.yml")
 data = t.yaml_reader(path)
-data2 = t.yaml_all_reader(path)
+print (type(data))
+t.file_writer("test.txt", data)
 
-data3 = data2
-
-for i in data3:
-    print(type(i))
+t_dic = {"name":{"value":"3","value2":"n"}}
+print(t_dic)

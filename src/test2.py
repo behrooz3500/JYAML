@@ -1,4 +1,5 @@
 import yaml
+import json
 
 
 def yaml_reader(filepath):
@@ -15,3 +16,7 @@ def yaml_all_reader(filepath):
 def yaml_writer(filepath, data):
     with open(filepath, "w") as yf:
         yaml.dump(data, yf)
+
+def file_writer(pathfile, data):
+    with open (pathfile,'w+') as wr:
+        json.dump(data, wr, indent=3)

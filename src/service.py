@@ -33,6 +33,33 @@ class Service(object):
         }
 
 
+def create_template():
+    tmplt_dict = {
+        "version":"",
+        "services":{
+            "name":{
+                "image":"",
+                "container_name":"",
+                "command":"",
+                "volumes":[
+                ],
+                "expose":[
+                ],
+                "ports":[
+                ],
+                "environment":[
+                ],
+                "depends_on":[
+                ],
+            }
+        }
+    }
+    return tmplt_dict
 
 def export_to_compose(version, services, compose_path):
-    pass
+    exported_dic = create_template()
+    def insert_parameter():
+        exported_dic["version"] = version
+    insert_parameter()
+    return exported_dic
+print(export_to_compose("3.1", "", ""))
