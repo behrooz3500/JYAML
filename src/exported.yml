@@ -17,3 +17,37 @@ services:
       postgres_user: mapi_user
       postgres_password: s3cret
     depends_on: []
+  new:
+    image: postgres
+    container_name: new
+    command: stay with mee
+    volumes:
+    - db_data:/var/lib/postgresql/data
+    - /test/test1:/usr/share/data
+    expose:
+    - 8000
+    - 8080
+    ports:
+      '5432': '5432'
+    environment:
+      postgres_db: mapi
+      postgres_user: mapi_user
+      postgres_password: s3cret
+    depends_on: []
+  new2:
+    image: postgres
+    container_name: new2
+    command: exec startup.sh
+    volumes:
+    - db_data:/var/lib/postgresql/data
+    - /test/test1:/usr/share/data
+    expose:
+    - 8000
+    - 8080
+    ports:
+      '5432': '5432'
+    environment:
+      postgres_db: mapi
+      postgres_user: mapi_user
+      postgres_password: s3cret
+    depends_on: []

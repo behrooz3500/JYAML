@@ -2,6 +2,12 @@ from re import L
 import yaml
 import json
 
+
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True
+
+        
 ###reading a yml file
 def yaml_reader(filepath):
     with open(filepath, 'r') as yf:
@@ -17,7 +23,7 @@ def yaml_all_reader(filepath):
 ###Exporting data to a yml file
 def yaml_writer(filepath, data):
     with open(filepath, "w") as yf:
-        yaml.dump(data, yf, sort_keys=False)
+        yaml.dump(data, yf, sort_keys=False, Dumper=NoAliasDumper)
 
 ###Exporting data to a Json file
 def file_writer(pathfile, data):
@@ -61,7 +67,7 @@ def tmplt_dict():
                          "services",
                          "volumes"
                          ]
-                         
+
     list_of_service_keys = ["image",
                             "container_name",
                             "command",

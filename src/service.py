@@ -1,5 +1,6 @@
 import functions as t
 import testCases as tc
+import yaml
 
 class Service(object):
     """Service Model"""
@@ -46,33 +47,39 @@ def export_to_compose(version, services, compose_path):
     exported_dic["version"] = version
 
     #setting parameters for  services
-    sec_dict = {services[0]:
-                    {"image":services[1],
-                    "container_name":services[0],
-                    "command":services[2],
-                    "volumes":services[3],
-                    "expose":services[4],
-                    "ports":services[5],
-                    "environment":services[6],
-                    "depends_on":services[7]
+    for s in services:
+        sec_dict = {s[0]:
+                        {"image":s[1],
+                        "container_name":s[0],
+                        "command":s[2],
+                        "volumes":s[3],
+                        "expose":s[4],
+                        "ports":s[5],
+                        "environment":s[6],
+                        "depends_on":s[7]
+                        }
                     }
-                }
-
-    #adding service parameters to the template dict
-    exported_dic["services"] = sec_dict
+        print(sec_dict)
+        #adding service parameters to the template dict
+        exported_dic.get("services").update(sec_dict)
+        #exported_dic["services"] = sec_dict
+        #sec_dict.clear()
 
     #Exporting dict as a yml file
     t.yaml_writer(compose_path, exported_dic)
 
-    ''''
+
+    
+    
+def export_to_compose2(version, services, compose_path):
     inner_dict = dict(zip(t.tmplt_dict()[1],services))
-    outer_dict = dict.fromkeys(t.tmplt_dict()[0])
+    outer_dict = dict.fromkeys(t.tmplt_dict()[0],{})
     outer_dict["version"] = version
-    outer_dict["services"] = (inner_dict)
+    #outer_dict.get("services").update(services[0])
+    #outer_dict.get("services").update(inner_dict)
     t.yaml_writer(compose_path, outer_dict)
-    '''
 
 #test case
-services = tc.s1
+services = tc.s3
 compose_path = ("exported.yml")
 export_to_compose("3.2",services,compose_path)
