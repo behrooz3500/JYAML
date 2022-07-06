@@ -1,4 +1,6 @@
-import test2 as t
+import functions as t
+import testCases as tc
+
 class Service(object):
     """Service Model"""
     def __init__(
@@ -34,50 +36,16 @@ class Service(object):
         }
 
 
-def create_template():
-    tmplt_dict = {
-        "version":"",
-        "services":{
-            "name":{
-                "image":"",
-                "container_name":"",
-                "command":"",
-                "volumes":[
-                ],
-                "expose":[
-                ],
-                "ports":[
-                ],
-                "environment":[
-                ],
-                "depends_on":[
-                ],
-            }
-        }
-    }
-    tmplt_dict2 = {
-        "version":"",
-        "services":{         
-            }
-        }
-    return tmplt_dict2
 
 
-name = 'db'                 
-image= 'postgres'        
-volumes = ['db_data:/var/lib/postgresql/data', '/test/test1:/usr/share/data']  
-environment = {
-    'postgres_db': 'mapi',
-    'postgres_user': 'mapi_user',
-    'postgres_password': 's3cret'}
-expose = []                
-ports = {'5432': '5432'}
-commands = 'exec startup.sh'
-services = [name, image, commands, volumes, expose, ports, environment,[]]
-compose_path = ("exported.yml")
 def export_to_compose(version, services, compose_path):
-    exported_dic = create_template()
+    #Create a template dictionary
+    exported_dic = t.create_template()
+
+    #setting version
     exported_dic["version"] = version
+
+    #setting parameters for  services
     sec_dict = {services[0]:
                     {"image":services[1],
                     "container_name":services[0],
@@ -88,11 +56,23 @@ def export_to_compose(version, services, compose_path):
                     "environment":services[6],
                     "depends_on":services[7]
                     }
-                    
                 }
+
+    #adding service parameters to the template dict
     exported_dic["services"] = sec_dict
-    print (exported_dic)
-    
+
+    #Exporting dict as a yml file
     t.yaml_writer(compose_path, exported_dic)
 
+    ''''
+    inner_dict = dict(zip(t.tmplt_dict()[1],services))
+    outer_dict = dict.fromkeys(t.tmplt_dict()[0])
+    outer_dict["version"] = version
+    outer_dict["services"] = (inner_dict)
+    t.yaml_writer(compose_path, outer_dict)
+    '''
+
+#test case
+services = tc.s1
+compose_path = ("exported.yml")
 export_to_compose("3.2",services,compose_path)
